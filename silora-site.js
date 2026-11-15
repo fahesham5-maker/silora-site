@@ -57,7 +57,15 @@
     if (!PREVIEW) return u;
     try { var p = new URL(u).pathname.replace(/^\/(ar|en)\//, ''); return storeBase() + p.replace(/^\//, ''); } catch (e) { return u; }
   }
-  function catUrl(k) { return CAT[k] ? U(CAT[k]) : U(CAT.all || ''); }
+  function catUrl(k) { return CAT[k] ? U(CAT[k]) : U('search') + '?q=silora&sl=' + k; }
+  var COLS = {
+    news: { t: 'وصل حديثاً', s: 'أحدث قطع سيلورا، لطقسكِ المفضل القادم.' },
+    pajamas: { t: 'بيجامات', s: 'أطقم ناعمة من قماش ٩٣٪ فيسكوز و٧٪ سباندكس، للحظاتكِ الهادئة.' },
+    robes: { t: 'أرواب', s: 'أرواب خفيفة تُكمل أطقمكِ المفضلة، بنفس النعومة.' },
+    gifts: { t: 'هدايا', s: 'هدية ناعمة لمن تحبين — أو لكِ أنتِ.' },
+    all: { t: 'تسوقي الكل', s: 'كل قطع سيلورا في مكان واحد.' }
+  };
+  function colKey() { try { var k = new URLSearchParams(location.search).get('sl'); return COLS[k] ? k : ''; } catch (e) { return ''; } }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function h(html) { var t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; }
   function img(n) { return CDN + 'img/' + n; }
@@ -544,6 +552,27 @@
     if (bc && bc.parentNode === main) bc.insertAdjacentElement('afterend', hd); else main.insertBefore(hd, main.firstChild);
   }
 
+  function collection(k) {
+    var main = document.querySelector('main'); if (!main) return;
+    document.body.classList.add('sl-col');
+    var c = COLS[k];
+    document.title = c.t + ' | Silora';
+    var el = h('<div class="sl sl-colpage"><div class="sl-cathead"><h1 class="sl-reveal">' + c.t + '</h1><p class="sl-reveal" data-d="1">' + c.s + '</p></div>' +
+      '<div class="sl-colbar"><div class="sl-chips">' + ['all', 'news', 'pajamas', 'robes'].map(function (x) { return '<a href="' + catUrl(x) + '"' + (x === k ? ' class="is-on"' : '') + '>' + COLS[x].t + '</a>'; }).join('') + '</div><span data-sl-n></span></div>' +
+      '<div class="sl-grid" data-sl-grid><div class="sl-grid__load"></div></div></div>');
+    main.insertBefore(el, main.firstChild);
+    products().then(function (l) {
+      var list = l.filter(function (p) { return k === 'pajamas' ? !isRobe(p.name) : k === 'robes' ? isRobe(p.name) : true; });
+      var order = function (p) { var n = String(p.name).toLowerCase(); for (var i = 0; i < RAIL_ORDER.length; i++) if (n.indexOf(RAIL_ORDER[i]) > -1) return i * 2 + (isRobe(p.name) ? 1 : 0); return 99; };
+      list.sort(function (a, b) { return order(a) - order(b); });
+      var g = el.querySelector('[data-sl-grid]');
+      g.innerHTML = list.length ? list.map(card).join('') : '<p class="sl-empty">لا توجد قطع هنا بعد.</p>';
+      g.querySelectorAll('.sl-card').forEach(function (cd, i) { cd.classList.add('sl-reveal'); cd.setAttribute('data-d', i % 4); });
+      el.querySelector('[data-sl-n]').textContent = list.length + ' قطع';
+      reveal(el);
+    });
+  }
+
   function boot() {
     if (document.body.classList.contains('sl-on')) return;
     var b = document.body;
@@ -569,7 +598,8 @@
     headerScroll(hd, isHome);
     cartCount();
     if (isPdp) pdp();
-    if (isCat) category();
+    var ck = colKey();
+    if (ck) collection(ck); else if (isCat) category();
     if (homeEl) {
       heroCarousel(homeEl.querySelector('.sl-hero'));
       var upd = rail(homeEl.querySelector('.sl-rail'));
