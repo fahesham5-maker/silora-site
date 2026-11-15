@@ -25,7 +25,7 @@
     '93545949': 'Blue Me Away', '1133289926': 'Pink About It', '1729481504': 'Mint To Be',
     '1436896160': 'Butter Me Up', '690540196': 'Pink Me Later'
   };
-  var MATERIAL = '٩٣٪ فيسكوز · ٧٪ سباندكس';
+  var MATERIAL = '٩٣٪ فيسكوز و٧٪ سباندكس';
 
   var I = {
     user: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.9-3.6 3.7-5.6 7.2-5.6s6.3 2 7.2 5.6"/></svg>',
@@ -142,7 +142,7 @@
 
   function certBody() {
     return '<div class="sl-cert-d">' +
-      '<h3><span class="sl-latin">OEKO-TEX® STANDARD 100</span> · شهادة القماش</h3>' +
+      '<h3><span class="sl-latin">OEKO-TEX® STANDARD 100</span> — شهادة القماش</h3>' +
       '<p>تؤكد هذه الشهادة أن القماش المحبوك الذي ينتجه موردنا، شركة Shantou Mingda Textile، تم اختباره للتأكد من خلوّه من المواد الضارة وفق معايير OEKO-TEX® STANDARD 100. رقم الشهادة HK015 266400، وهي سارية حتى 31 يوليو 2027. تشمل الشهادة القماش فقط، وليس القطعة النهائية.</p>' +
       '<table class="sl-table"><tbody>' +
       '<tr><th>رقم الشهادة</th><td><span class="sl-ltr">HK015 266400</span></td></tr>' +
@@ -258,14 +258,14 @@
       '<div><h4>اكتشفي</h4><ul><li><a href="' + U('') + '#sl-story">قصتنا</a></li><li><a href="' + U(PAGES.fabric) + '">قماشنا</a></li><li><a href="#" data-sl-open="cert">شهادة الخامة (قماش <span class="sl-latin">OEKO-TEX®</span>)</a></li></ul></div>' +
       '<div><h4>المساعدة</h4><ul><li><a href="#" data-sl-open="size">دليل المقاسات</a></li><li><a href="' + U(PAGES.shipping) + '">الشحن والتوصيل</a></li><li><a href="' + U(PAGES.returns) + '">الاستبدال والاسترجاع</a></li><li><a href="' + U(PAGES.contact) + '">تواصلي معنا</a></li></ul></div>' +
       '<div><h4>قانوني</h4><ul><li><a href="' + U(PAGES.privacy) + '">سياسة الخصوصية</a></li></ul></div>' +
-      '</div><div class="sl-footer__bot"><span>© ' + new Date().getFullYear() + ' سيلورا · المملكة العربية السعودية</span><span>دفع آمن عبر سلة</span></div></footer>');
+      '</div><div class="sl-footer__bot"><span>© ' + new Date().getFullYear() + ' سيلورا، المملكة العربية السعودية</span><span>دفع آمن عبر سلة</span></div></footer>');
   }
 
   function pdpBlock(name) {
     return h('<div class="sl sl-pdp">' +
       '<div class="sl-pdp__row"><span class="sl-eyebrow">المقاس</span><button type="button" class="sl-link" data-sl-open="size">دليل المقاسات</button></div>' +
       '<div class="sl-fabric"><div><small>القماش</small><span>' + MATERIAL + ' جيرسي</span></div><button type="button" data-sl-open="cert">' + I.doc + 'عرض شهادة الخامة</button></div>' +
-      '<div class="sl-ship">التوصيل لجميع مناطق المملكة خلال ٣–٧ أيام عمل · ٣٠ ر.س<br>الاستبدال أو الاسترجاع خلال ٧ أيام — غير مستخدمة، غير مغسولة، مع البطاقات.<br><a href="' + U(PAGES.returns) + '">سياسة الاستبدال والاسترجاع</a></div>' +
+      '<div class="sl-ship">التوصيل لجميع مناطق المملكة خلال ٣–٧ أيام عمل، برسوم ٣٠ ر.س<br>الاستبدال أو الاسترجاع خلال ٧ أيام — غير مستخدمة، غير مغسولة، مع البطاقات.<br><a href="' + U(PAGES.returns) + '">سياسة الاستبدال والاسترجاع</a></div>' +
       '<div class="sl-acc is-open"><button type="button" aria-expanded="true">القماش والعناية <i></i></button><div><div><p>جيرسي محبوك ' + MATERIAL + ' (١٩٠ غ). ناعم، مرن وخفيف على البشرة. تعليمات العناية التفصيلية مرفقة مع القطعة.</p></div></div></div>' +
       '<div class="sl-acc"><button type="button" aria-expanded="false">المقاس والقصّة <i></i></button><div><div><p>قصّة مريحة للحظات الاسترخاء. راجعي <a href="#" data-sl-open="size" style="text-decoration:underline">دليل المقاسات</a> لاختيار مقاسكِ.</p></div></div></div>' +
       '<div class="sl-acc"><button type="button" aria-expanded="false">التوصيل والاسترجاع <i></i></button><div><div><p>تجهيز الطلب خلال ١–٢ يوم، والتوصيل خلال ٣–٧ أيام عمل لجميع مناطق المملكة برسوم ٣٠ ر.س. الاستبدال أو الاسترجاع خلال ٧ أيام من الاستلام، والتواصل عبر إنستغرام <span class="sl-ltr">@silora_sa</span>.</p></div></div></div>' +
@@ -377,8 +377,10 @@
 
   function headerScroll(hd, homePage) {
     var last = 0, ticking = false;
+    var bar = document.querySelector('salla-maintenance-alert');
     function upd() {
       var y = window.scrollY;
+      if (bar) { var bt = Math.max(0, bar.getBoundingClientRect().bottom); hd.style.top = bt + 'px'; }
       if (homePage) hd.classList.toggle('is-clear', y < 40);
       hd.classList.toggle('is-hidden', y > 400 && y > last && !openDrawer && !hd.matches(':hover'));
       last = y; ticking = false;
@@ -501,7 +503,7 @@
       var c = COLORS[k];
       if (!p) return '';
       return '<a class="sl-mini sl-reveal" data-d="' + (k + 1) + '" href="' + esc(productUrl(p.url)) + '"><img src="' + esc(pimg(p)) + '" alt="' + esc(p.name) + '" loading="lazy"><div>' +
-        '<div class="sl-mini__n">' + esc(p.name) + '</div><div class="sl-mini__m">' + c.ar + ' · ' + c.side + '</div>' +
+        '<div class="sl-mini__n">' + esc(p.name) + '</div><div class="sl-mini__m">' + c.ar + '، ' + c.side + '</div>' +
         '<div class="sl-mini__p">' + price(p) + '</div><span class="sl-link">عرض المنتج ' + I.arrow + '</span></div></a>';
     }).join('');
     try {
