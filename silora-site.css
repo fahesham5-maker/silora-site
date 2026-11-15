@@ -25,7 +25,10 @@ body.sl-lock{overflow:hidden}
 .sl{font-family:var(--sl-ar);color:var(--sl-ink);line-height:1.7}
 .sl img{display:block;max-width:100%}
 .sl a{color:inherit;text-decoration:none}
-.sl button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.sl button:not(.sl-btn){font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.sl button.sl-btn{cursor:pointer}
+.sl .sl-split__panel,.sl .sl-hero,.sl .sl-camp__copy{color:var(--sl-white)}
+.sl .sl-mini{color:var(--sl-ink)}
 .sl-latin{font-family:var(--sl-serif)}
 
 .sl-btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 32px;background:var(--sl-white);color:var(--sl-ink)!important;border:1px solid var(--sl-line3);font-family:var(--sl-ar);font-size:15px;font-weight:500;letter-spacing:0;transition:background .35s var(--sl-ease),border-color .35s var(--sl-ease),color .35s var(--sl-ease),transform .35s var(--sl-ease);white-space:nowrap}
@@ -97,6 +100,7 @@ body.sl-lock{overflow:hidden}
 .sl-drawer__body{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:28px 32px 40px}
 .sl-x{width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;transition:background .3s,transform .4s var(--sl-ease)}
 .sl-x:hover{background:var(--sl-pink100);transform:rotate(90deg)}
+.sl .sl-x:focus:not(:focus-visible){outline:0}
 .sl-x svg{width:20px;height:20px;stroke:var(--sl-ink);stroke-width:1.4;fill:none}
 @media (max-width:640px){
   .sl-drawer:not(.sl-drawer--menu) .sl-drawer__panel{inset:auto 0 0 0;width:100%;max-height:92vh;border-radius:18px 18px 0 0;transform:translateY(100%)}
@@ -370,7 +374,7 @@ body.sl-on.product-single .sidebar .swiper-slide img,body.sl-on.product-single .
 body.sl-on.product-single salla-social-share,body.sl-on.product-single .main-content>.flex.rtl\:space-x-reverse{display:none!important}
 body.sl-on .s-button-primary,body.sl-on .btn--primary,body.sl-on salla-add-product-button .s-button-element,body.sl-on .s-button-element.s-button-primary{background:var(--sl-white)!important;color:var(--sl-ink)!important;border:1px solid var(--sl-line3)!important;border-radius:0!important;font-family:var(--sl-ar)!important;font-weight:500!important;min-height:52px;transition:background .35s var(--sl-ease),border-color .35s var(--sl-ease)!important;box-shadow:none!important}
 body.sl-on .s-button-primary:hover,body.sl-on salla-add-product-button .s-button-element:hover{background:var(--sl-pink100)!important;border-color:var(--sl-ink)!important}
-body.sl-on salla-quick-order .s-button-element,body.sl-on .s-quick-order-button{background:var(--sl-ink)!important;color:var(--sl-white)!important;border-radius:0!important;border-color:var(--sl-ink)!important}
+body.sl-on salla-quick-order button,body.sl-on salla-quick-order .s-button-element,body.sl-on .s-quick-order-button{background:var(--sl-ink)!important;color:var(--sl-white)!important;border-radius:0!important;border-color:var(--sl-ink)!important}
 body.sl-on .s-quantity-input-container,body.sl-on .s-quantity-input-input,body.sl-on .s-quantity-input-button{border-radius:0!important;border-color:var(--sl-line3)!important}
 body.sl-on .s-button-element,body.sl-on input,body.sl-on select,body.sl-on textarea{border-radius:0!important}
 body.sl-on .s-block__title h2,body.sl-on .s-block__title .text-2xl,body.sl-on .s-block h2{font-family:var(--sl-ar)!important;font-weight:400!important;font-size:clamp(26px,2.6vw,38px)!important;color:var(--sl-ink)!important}
@@ -395,3 +399,6 @@ body.sl-on .s-modal-body,body.sl-on .s-modal-container .s-modal-wrapper{border-r
   .sl-reveal{opacity:1;transform:none}
   html{scroll-behavior:auto}
 }
+
+body.sl-on salla-quick-order button *{color:#fff!important}
+body.sl-on .product-form{border-radius:0!important}

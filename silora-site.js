@@ -263,7 +263,7 @@
 
   function pdpBlock(name) {
     return h('<div class="sl sl-pdp">' +
-      '<div class="sl-pdp__row"><span class="sl-eyebrow">المقاس</span><button type="button" class="sl-link" data-sl-open="size">دليل المقاسات</button></div>' +
+      '<div class="sl-pdp__row"><button type="button" class="sl-link" data-sl-open="size">دليل المقاسات</button></div>' +
       '<div class="sl-fabric"><div><small>القماش</small><span>' + MATERIAL + ' جيرسي</span></div><button type="button" data-sl-open="cert">' + I.doc + 'عرض شهادة الخامة</button></div>' +
       '<div class="sl-ship">التوصيل لجميع مناطق المملكة خلال ٣–٧ أيام عمل، برسوم ٣٠ ر.س<br>الاستبدال أو الاسترجاع خلال ٧ أيام — غير مستخدمة، غير مغسولة، مع البطاقات.<br><a href="' + U(PAGES.returns) + '">سياسة الاستبدال والاسترجاع</a></div>' +
       '<div class="sl-acc is-open"><button type="button" aria-expanded="true">القماش والعناية <i></i></button><div><div><p>جيرسي محبوك ' + MATERIAL + ' (١٩٠ غ). ناعم، مرن وخفيف على البشرة. تعليمات العناية التفصيلية مرفقة مع القطعة.</p></div></div></div>' +
