@@ -537,16 +537,16 @@
     var grid = h('<div class="sl sl-sizes" role="radiogroup" aria-label="المقاس"></div>');
     [].slice.call(sel.options).forEach(function (o) {
       if (!o.value) return;
-      var btn = h('<button type="button" role="radio" aria-checked="false" class="sl-size" data-v="' + o.value + '">' + esc(o.textContent.trim()) + '</button>');
+      var btn = h('<button type="button" role="radio" aria-checked="false" class="sl-sz" data-v="' + o.value + '">' + esc(o.textContent.trim()) + '</button>');
       if (o.disabled) { btn.disabled = true; btn.classList.add('is-out'); }
       grid.appendChild(btn);
     });
     grid.addEventListener('click', function (e) {
-      var b = e.target.closest('.sl-size'); if (!b || b.disabled) return;
+      var b = e.target.closest('.sl-sz'); if (!b || b.disabled) return;
       sel.value = b.getAttribute('data-v');
       sel.dispatchEvent(new Event('input', { bubbles: true }));
       sel.dispatchEvent(new Event('change', { bubbles: true }));
-      grid.querySelectorAll('.sl-size').forEach(function (x) { var on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-checked', on); });
+      grid.querySelectorAll('.sl-sz').forEach(function (x) { var on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-checked', on); });
       head.querySelector('[data-sl-size]').textContent = b.textContent;
       box.classList.remove('sl-need');
     });
