@@ -438,3 +438,16 @@ body.sl-on salla-add-product-button button:hover{background:var(--sl-pink100)!im
 .sl-pay salla-payments img{height:22px;width:auto;background:#fff;padding:3px 6px;border:1px solid rgba(53,42,48,.08)}
 body.sl-on salla-installment{display:block;margin:6px 0 14px}
 body.sl-on salla-installment *{border-radius:0!important}
+
+body.sl-on salla-quick-buy,body.sl-on salla-quick-buy>*,body.sl-on salla-mini-checkout-widget{display:block;border-radius:0!important}
+body.sl-on salla-quick-buy button,body.sl-on salla-quick-buy .s-button-element,body.sl-on salla-quick-buy [class*="quick-buy"],body.sl-on [class*="s-quick-buy"] button,body.sl-on salla-mini-checkout-widget button,body.sl-on form.product-form button.s-button-outline,body.sl-on form.product-form .s-button-outline{height:52px!important;min-height:52px!important;max-height:52px!important;width:100%!important;border-radius:0!important;background:var(--sl-ink)!important;border:1px solid var(--sl-ink)!important;color:#fff!important;box-shadow:none!important;font-family:var(--sl-ar)!important;font-size:15px!important;font-weight:500!important;transition:background .35s var(--sl-ease)!important}
+body.sl-on salla-quick-buy button *,body.sl-on salla-quick-buy svg,body.sl-on salla-quick-buy i,body.sl-on form.product-form .s-button-outline *{color:#fff!important;stroke:currentColor}
+body.sl-on salla-quick-buy button:hover,body.sl-on form.product-form .s-button-outline:hover{background:#4a3b43!important;border-color:#4a3b43!important}
+
+body.sl-on salla-quick-buy *,body.sl-on .s-quick-buy-button,body.sl-on .s-quick-buy-button *{border-radius:0!important}
+body.sl-on .s-quick-buy-button,body.sl-on salla-quick-buy .s-button-wrap{display:block!important;width:100%!important;height:52px!important;border:0!important;background:transparent!important;padding:0!important;box-shadow:none!important}
+body.sl-on .s-quick-buy-button .s-button-element,body.sl-on .s-quick-buy-button button{height:52px!important;min-height:52px!important;width:100%!important;background:var(--sl-ink)!important;border:1px solid var(--sl-ink)!important;color:#fff!important;box-shadow:none!important}
+body.sl-on .s-quick-buy-button .s-button-text,body.sl-on .s-quick-buy-button .s-button-text *,body.sl-on .s-quick-buy-button svg{color:#fff!important;fill:none!important;stroke:#fff!important}
+body.sl-on .s-quick-buy-button .s-button-element:hover{background:#4a3b43!important;border-color:#4a3b43!important}
+body.sl-on salla-add-product-button .s-add-product-button-main,body.sl-on salla-add-product-button .s-button-element:not(.s-quick-buy-button *){height:52px!important;min-height:52px!important;border-radius:0!important}
+body.sl-on apple-pay-button{--apple-pay-button-height:52px;--apple-pay-button-border-radius:0}
