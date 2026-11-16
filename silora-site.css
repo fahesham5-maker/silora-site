@@ -489,3 +489,14 @@ body.sl-on.product-single section.s-block[class*=bundle]:not(:has(img)){display:
 .sl-also{padding:88px 0 40px}
 .sl-also .sl-h2{padding:0 var(--sl-pad);margin-bottom:36px}
 @media (max-width:640px){.sl-also{padding:56px 0 24px}}
+
+.sl-pair__buy{margin-top:28px;max-width:460px}
+.sl-pair__lbl{display:block;font-size:14px;color:var(--sl-ink2);margin-bottom:10px}
+.sl-pair__sizes .sl-sizes{justify-content:flex-end}
+.sl-pair__sizes button.sl-sz{background:rgba(255,255,255,.85)}
+.sl-pair__ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.sl-pair__ctas .sl-btn{min-width:170px}
+.sl-btn.is-busy{opacity:.7;pointer-events:none}
+.sl-btn.is-done{background:#4a3b43!important}
+.sl-pair__msg{min-height:1.6em;margin:10px 0 0!important;font-size:14px!important;color:var(--sl-deep)!important}
+@media (max-width:640px){.sl-pair__ctas .sl-btn{flex:1;min-width:0}}

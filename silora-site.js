@@ -590,6 +590,43 @@
         '<div class="sl-pair__in"><div class="sl-pair__copy"><h2 class="sl-reveal">أكملي لحظتكِ</h2><p class="sl-reveal" data-d="1">' + esc(text) + '</p><span class="sl-pair__script sl-reveal" data-d="2">صُنعا ليُلبسا معاً</span></div>' +
         '<div class="sl-pair__card sl-reveal" data-d="2">' + card(mate) + '</div></div></section>');
       var cn = sec.querySelector('.sl-card__name'); if (cn) cn.textContent = robe ? title : mate.name;
+      var buy = h('<div class="sl-pair__buy sl-reveal" data-d="3"><div class="sl-pair__sizes" hidden><span class="sl-pair__lbl">اختاري المقاس</span><div class="sl-sizes" role="radiogroup" aria-label="المقاس"></div></div>' +
+        '<div class="sl-pair__ctas"><button type="button" class="sl-btn sl-btn--dark" data-sl-pairadd>أضيفي إلى السلة</button><a class="sl-btn" href="' + esc(productUrl(mate.url)) + '">عرض القطعة</a></div><p class="sl-pair__msg" role="status" aria-live="polite"></p></div>');
+      sec.querySelector('.sl-pair__copy').appendChild(buy);
+      var addBtn = buy.querySelector('[data-sl-pairadd]'), msg = buy.querySelector('.sl-pair__msg'), wrap = buy.querySelector('.sl-pair__sizes'), grid = buy.querySelector('.sl-sizes');
+      var opt = null, chosen = null, ready = false;
+      try {
+        salla.api.product.getDetails(mate.id, ['options']).then(function (r) {
+          var o = ((r && r.data && r.data.options) || []).filter(function (x) { return x.type === 'single-option' && (x.details || []).length; })[0];
+          ready = true;
+          if (!o) return;
+          opt = o; wrap.hidden = false;
+          o.details.forEach(function (v) {
+            var b = h('<button type="button" role="radio" aria-checked="false" class="sl-sz" data-v="' + v.id + '">' + esc(v.name) + '</button>');
+            if (v.is_out) { b.disabled = true; b.classList.add('is-out'); }
+            grid.appendChild(b);
+          });
+        }).catch(function () { ready = true; });
+      } catch (er) { ready = true; }
+      grid.addEventListener('click', function (e) {
+        var b = e.target.closest('.sl-sz'); if (!b || b.disabled) return;
+        chosen = b.getAttribute('data-v');
+        grid.querySelectorAll('.sl-sz').forEach(function (x) { var on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-checked', on); });
+        wrap.classList.remove('sl-need'); msg.textContent = '';
+      });
+      addBtn.addEventListener('click', function () {
+        if (!ready) return;
+        if (opt && !chosen) { wrap.classList.remove('sl-need'); void wrap.offsetWidth; wrap.classList.add('sl-need'); msg.textContent = 'اختاري المقاس أولاً'; return; }
+        var payload = { id: mate.id, quantity: 1 };
+        if (opt) { payload.options = {}; payload.options[opt.id] = chosen; }
+        addBtn.disabled = true; addBtn.classList.add('is-busy'); msg.textContent = '';
+        salla.cart.addItem(payload).then(function () {
+          addBtn.textContent = 'أُضيفت إلى السلة ✓'; addBtn.classList.add('is-done');
+          setTimeout(function () { addBtn.textContent = 'أضيفي إلى السلة'; addBtn.classList.remove('is-done'); addBtn.disabled = false; }, 2600);
+        }).catch(function () {
+          addBtn.disabled = false; msg.textContent = 'تعذّرت الإضافة، جرّبي من صفحة القطعة.';
+        }).then(function () { addBtn.classList.remove('is-busy'); });
+      });
       if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor.nextSibling);
       reveal(sec);
     });
