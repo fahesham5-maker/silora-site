@@ -402,7 +402,7 @@
   function cartCount() {
     var el = document.querySelector('[data-sl-count]'); if (!el) return;
     function set(n) {
-      n = parseInt(n, 10) || 0;
+      n = parseInt(String(n == null ? '' : n).replace(/[\u0660-\u0669]/g, function (d) { return d.charCodeAt(0) - 1632; }).replace(/[\u06F0-\u06F9]/g, function (d) { return d.charCodeAt(0) - 1776; }).replace(/[^0-9]/g, ''), 10) || 0;
       var prev = parseInt(el.textContent, 10) || 0;
       el.textContent = n; el.classList.toggle('is-on', n > 0);
       if (n > prev) { el.classList.remove('is-bump'); void el.offsetWidth; el.classList.add('is-bump'); }
