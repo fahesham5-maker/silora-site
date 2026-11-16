@@ -525,6 +525,76 @@
     reveal(root);
   }
 
+  function enhanceSizes() {
+    var box = [].slice.call(document.querySelectorAll('.s-product-options-option-container')).find(function (c) {
+      return c.querySelector('select') && /المقاس|size/i.test((c.querySelector('label') || {}).textContent || '');
+    });
+    if (!box || box.querySelector('.sl-sizes')) return !!box;
+    var sel = box.querySelector('select');
+    var label = box.querySelector('.s-product-options-option-label');
+    box.classList.add('sl-sizebox');
+    var head = h('<div class="sl sl-sizes__head"><span>المقاس: <b data-sl-size>اختاري مقاسكِ</b></span><button type="button" class="sl-link" data-sl-open="size">دليل المقاسات</button></div>');
+    var grid = h('<div class="sl sl-sizes" role="radiogroup" aria-label="المقاس"></div>');
+    [].slice.call(sel.options).forEach(function (o) {
+      if (!o.value) return;
+      var btn = h('<button type="button" role="radio" aria-checked="false" class="sl-size" data-v="' + o.value + '">' + esc(o.textContent.trim()) + '</button>');
+      if (o.disabled) { btn.disabled = true; btn.classList.add('is-out'); }
+      grid.appendChild(btn);
+    });
+    grid.addEventListener('click', function (e) {
+      var b = e.target.closest('.sl-size'); if (!b || b.disabled) return;
+      sel.value = b.getAttribute('data-v');
+      sel.dispatchEvent(new Event('input', { bubbles: true }));
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      grid.querySelectorAll('.sl-size').forEach(function (x) { var on = x === b; x.classList.toggle('is-on', on); x.setAttribute('aria-checked', on); });
+      head.querySelector('[data-sl-size]').textContent = b.textContent;
+      box.classList.remove('sl-need');
+    });
+    sel.addEventListener('invalid', function () { box.classList.add('sl-need'); });
+    if (label) label.style.display = 'none';
+    sel.parentNode.parentNode.insertBefore(head, sel.parentNode);
+    sel.parentNode.parentNode.insertBefore(grid, sel.parentNode);
+    sel.parentNode.classList.add('sl-hidden-select');
+    var row = document.querySelector('.sl-pdp__row'); if (row) row.style.display = 'none';
+    var form = document.querySelector('form.product-form');
+    if (form) form.addEventListener('submit', function () { if (!sel.value) { box.classList.add('sl-need'); box.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }, true);
+    return true;
+  }
+  function watchSizes() {
+    if (enhanceSizes()) return;
+    var n = 0, t = setInterval(function () { if (enhanceSizes() || ++n > 30) clearInterval(t); }, 400);
+  }
+
+  var PAIR = {
+    'blue me away': { bg: '#BFDCEF', ar: 'السماوي' },
+    'pink about it': { bg: '#F6D5D8', ar: 'الوردي الفاتح' },
+    'mint to be': { bg: '#CFE3CF', ar: 'النعناعي' },
+    'butter me up': { bg: '#F2E3A9', ar: 'الزبدي' },
+    'pink me later': { bg: '#EEC3D3', ar: 'الكاروهات الوردي' }
+  };
+  function pairSection(name) {
+    var n = String(name || '').toLowerCase(), key = null;
+    Object.keys(PAIR).forEach(function (k) { if (n.indexOf(k) > -1) key = k; });
+    if (!key || document.querySelector('.sl-pair')) return;
+    var robe = isRobe(name);
+    var anchor = document.querySelector('.container--product-details') || document.querySelector('main');
+    var heroImg = (document.querySelector('.container--product-details .sidebar img') || {}).src || '';
+    products().then(function (list) {
+      var mate = list.filter(function (p) { return String(p.name).toLowerCase().indexOf(key) > -1 && isRobe(p.name) !== robe; })[0];
+      if (!mate) return;
+      var c = colorOf(mate.name) || { ar: '', c: PAIR[key].bg };
+      var title = robe ? 'طقم ' + mate.name.replace(/^روب\s*/, '') : mate.name;
+      var text = robe ? 'الطقم المطابق لهذا الروب، من نفس الجيرسي ' + PAIR[key].ar + ' وبنفس لمسات الدانتيل.' : 'روب ' + mate.name.replace(/^روب\s*/, '') + ' مصنوع من نفس الجيرسي ' + PAIR[key].ar + '، ومزيّن بدانتيل مطابق.';
+      var sec = h('<section class="sl sl-pair" style="--sl-tint:' + PAIR[key].bg + '">' +
+        (heroImg ? '<div class="sl-pair__bg" style="background-image:url(\'' + heroImg + '\')"></div>' : '') +
+        '<div class="sl-pair__in"><div class="sl-pair__copy"><h2 class="sl-reveal">أكملي لحظتكِ</h2><p class="sl-reveal" data-d="1">' + esc(text) + '</p><span class="sl-pair__script sl-reveal" data-d="2">صُنعا ليُلبسا معاً</span></div>' +
+        '<div class="sl-pair__card sl-reveal" data-d="2">' + card(mate) + '</div></div></section>');
+      var cn = sec.querySelector('.sl-card__name'); if (cn) cn.textContent = robe ? title : mate.name;
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor.nextSibling);
+      reveal(sec);
+    });
+  }
+
   var FAST_CSS = 'button{height:52px!important;min-height:52px!important;width:100%!important;border-radius:0!important;background:#352A30!important;border:1px solid #352A30!important;color:#fff!important;font-family:"Noto Naskh Arabic",serif!important;font-size:15px!important;font-weight:500!important;box-shadow:none!important;display:flex!important;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:background .35s cubic-bezier(.22,.61,.36,1)!important}button:hover{background:#4a3b43!important;border-color:#4a3b43!important}button *,button svg{color:#fff!important}';
   function squareFast() {
     document.querySelectorAll('salla-mini-checkout-widget').forEach(function (m) {
@@ -629,7 +699,7 @@
     wire();
     headerScroll(hd, isHome);
     cartCount();
-    if (isPdp) { pdp(); watchFast(); }
+    if (isPdp) { pdp(); watchFast(); watchSizes(); pairSection((document.querySelector('.main-content h1') || {}).textContent); }
     var ck = colKey();
     if (ck) collection(ck); else if (isCat) category();
     if (homeEl) {
