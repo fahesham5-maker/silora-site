@@ -525,6 +525,21 @@
     reveal(root);
   }
 
+  var FAST_CSS = 'button{height:52px!important;min-height:52px!important;width:100%!important;border-radius:0!important;background:#352A30!important;border:1px solid #352A30!important;color:#fff!important;font-family:"Noto Naskh Arabic",serif!important;font-size:15px!important;font-weight:500!important;box-shadow:none!important;display:flex!important;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:background .35s cubic-bezier(.22,.61,.36,1)!important}button:hover{background:#4a3b43!important;border-color:#4a3b43!important}button *,button svg{color:#fff!important}';
+  function squareFast() {
+    document.querySelectorAll('salla-mini-checkout-widget').forEach(function (m) {
+      if (!m.shadowRoot || m.shadowRoot.querySelector('style[data-sl]')) return;
+      var st = document.createElement('style'); st.setAttribute('data-sl', ''); st.textContent = FAST_CSS;
+      m.shadowRoot.appendChild(st);
+    });
+  }
+  function watchFast() {
+    squareFast();
+    var n = 0, t = setInterval(function () { squareFast(); if (++n > 20) clearInterval(t); }, 500);
+    var ap = document.querySelector('salla-add-product-button');
+    if (ap) new MutationObserver(squareFast).observe(ap, { childList: true, subtree: true });
+  }
+
   function pdp() {
     var mc = document.querySelector('.main-content');
     if (!mc || mc.querySelector('.sl-pdp')) return;
@@ -614,7 +629,7 @@
     wire();
     headerScroll(hd, isHome);
     cartCount();
-    if (isPdp) pdp();
+    if (isPdp) { pdp(); watchFast(); }
     var ck = colKey();
     if (ck) collection(ck); else if (isCat) category();
     if (homeEl) {

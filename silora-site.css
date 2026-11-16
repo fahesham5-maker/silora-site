@@ -451,3 +451,7 @@ body.sl-on .s-quick-buy-button .s-button-text,body.sl-on .s-quick-buy-button .s-
 body.sl-on .s-quick-buy-button .s-button-element:hover{background:#4a3b43!important;border-color:#4a3b43!important}
 body.sl-on salla-add-product-button .s-add-product-button-main,body.sl-on salla-add-product-button .s-button-element:not(.s-quick-buy-button *){height:52px!important;min-height:52px!important;border-radius:0!important}
 body.sl-on apple-pay-button{--apple-pay-button-height:52px;--apple-pay-button-border-radius:0}
+
+body.sl-on .s-add-product-button-mini-checkout-content,body.sl-on .s-add-product-button-mini-checkout-content *{color:#fff!important}
+body.sl-on salla-mini-checkout-widget{display:block!important;height:52px!important}
+.sl-pay salla-payments:has(ul:empty){display:none}
