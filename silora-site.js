@@ -41,6 +41,7 @@
     plus: '<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
     pause: '<svg viewBox="0 0 24 24"><path d="M9.5 6v12M14.5 6v12"/></svg>',
     play: '<svg viewBox="0 0 24 24"><path d="M8 6l10 6-10 6z"/></svg>',
+    gift: '<svg viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="4"/><path d="M5 12v8.5h14V12M12 8v12.5M12 8S10.8 3.5 8.2 4.2C6.4 4.7 7 8 12 8zm0 0s1.2-4.5 3.8-3.8C17.6 4.7 17 8 12 8z"/></svg>',
     doc: '<svg viewBox="0 0 24 24"><path d="M7 3.5h7l4 4V20.5H7z"/><path d="M14 3.5v4h4M9.5 12h6M9.5 15.5h6"/></svg>'
   };
 
@@ -266,11 +267,12 @@
       '<div><h4>اكتشفي</h4><ul><li><a href="' + U('') + '#sl-story">قصتنا</a></li><li><a href="' + U(PAGES.fabric) + '">قماشنا</a></li><li><a href="#" data-sl-open="cert">شهادة الخامة (قماش <span class="sl-latin">OEKO-TEX®</span>)</a></li></ul></div>' +
       '<div><h4>المساعدة</h4><ul><li><a href="#" data-sl-open="size">دليل المقاسات</a></li><li><a href="' + U(PAGES.shipping) + '">الشحن والتوصيل</a></li><li><a href="' + U(PAGES.returns) + '">الاستبدال والاسترجاع</a></li><li><a href="' + U(PAGES.contact) + '">تواصلي معنا</a></li></ul></div>' +
       '<div><h4>قانوني</h4><ul><li><a href="' + U(PAGES.privacy) + '">سياسة الخصوصية</a></li></ul></div>' +
-      '</div><div class="sl-footer__bot"><span>© ' + new Date().getFullYear() + ' سيلورا، المملكة العربية السعودية</span><span>دفع آمن عبر سلة</span></div></footer>');
+      '</div><div class="sl-footer__bot"><span>© ' + new Date().getFullYear() + ' سيلورا، المملكة العربية السعودية</span><span class="sl-pay"><span>دفع آمن عبر سلة</span><salla-payments></salla-payments></span></div></footer>');
   }
 
   function pdpBlock(name) {
     return h('<div class="sl sl-pdp">' +
+      '<div class="sl-gift" data-sl-giftbox hidden><div><h3>اهدِ من تحب</h3><p>أرسلي هذه القطعة كهدية تُسعد من تحبين، بخطوات بسيطة.</p></div><button type="button" class="sl-btn" data-sl-gift>' + I.gift + 'أرسلي كهدية</button></div>' +
       '<div class="sl-pdp__row"><button type="button" class="sl-link" data-sl-open="size">دليل المقاسات</button></div>' +
       '<div class="sl-fabric"><div><small>القماش</small><span>' + MATERIAL + ' جيرسي</span></div><button type="button" data-sl-open="cert">' + I.doc + 'عرض شهادة الخامة</button></div>' +
       '<div class="sl-ship">التوصيل لجميع مناطق المملكة خلال ٣–٧ أيام عمل، برسوم ٣٠ ر.س<br>الاستبدال أو الاسترجاع خلال ٧ أيام — غير مستخدمة، غير مغسولة، مع البطاقات.<br><a href="' + U(PAGES.returns) + '">سياسة الاستبدال والاسترجاع</a></div>' +
@@ -537,6 +539,21 @@
       var desc = mc.querySelector('.product__description');
       (desc || h1).insertAdjacentElement('afterend', col);
     }
+    var idIn = document.querySelector('form.product-form input[name="id"]');
+    var pid = idIn ? idIn.value : '';
+    var box = blk.querySelector('[data-sl-giftbox]');
+    var giftEl = document.querySelector('salla-gifting');
+    function showGift() {
+      if (!pid) return;
+      if (!giftEl) { giftEl = document.createElement('salla-gifting'); giftEl.setAttribute('product-id', pid); document.body.appendChild(giftEl); }
+      box.hidden = false;
+      box.querySelector('[data-sl-gift]').addEventListener('click', function () {
+        try { if (giftEl.open) { giftEl.open(); return; } } catch (e) { }
+        try { salla.event.dispatch('gifting::open', { product_id: pid }); } catch (e) { }
+      });
+    }
+    if (window.customElements && customElements.get('salla-gifting')) showGift();
+    else if (window.customElements) Promise.race([customElements.whenDefined('salla-gifting'), new Promise(function (r) { setTimeout(function () { r('x'); }, 6000); })]).then(function (v) { if (v !== 'x') showGift(); });
     var sz = document.querySelector('[data-sl-drawer="size"] .sl-drawer__body');
     if (sz) sz.innerHTML = sizeBody(name);
   }

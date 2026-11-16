@@ -416,3 +416,25 @@ body.sl-on.sl-col main{padding-top:var(--sl-head)}
 .sl-empty{grid-column:1/-1;text-align:center;color:var(--sl-ink2);padding:60px 0}
 @media (max-width:1024px){.sl-grid{grid-template-columns:repeat(3,1fr)}}
 @media (max-width:640px){.sl-grid{grid-template-columns:repeat(2,1fr);gap:32px 12px}.sl-colbar{flex-direction:column;align-items:flex-start}.sl-card__name{font-size:18px}}
+
+body.sl-on .main-content form.product-form .s-button-element,body.sl-on .main-content form.product-form button.s-button-btn,body.sl-on salla-add-product-button button,body.sl-on salla-quick-order button,body.sl-on salla-quick-order .s-button-element,body.sl-on salla-quick-order [class*="quick-order"]:is(button,a){height:52px!important;min-height:52px!important;max-height:52px!important;border-radius:0!important;box-shadow:none!important;font-family:var(--sl-ar)!important;font-size:15px!important;font-weight:500!important;padding:0 20px!important;transition:background .35s var(--sl-ease),border-color .35s var(--sl-ease)!important}
+body.sl-on salla-quick-order,body.sl-on salla-quick-order>*,body.sl-on salla-add-product-button,body.sl-on salla-add-product-button>*{border-radius:0!important}
+body.sl-on salla-quick-order button,body.sl-on salla-quick-order .s-button-element,body.sl-on salla-quick-order [class*="quick-order"]:is(button,a){background:var(--sl-ink)!important;border:1px solid var(--sl-ink)!important;color:#fff!important}
+body.sl-on salla-quick-order button *,body.sl-on salla-quick-order button svg{color:#fff!important;fill:none!important;stroke:#fff!important}
+body.sl-on salla-quick-order button:hover,body.sl-on salla-quick-order .s-button-element:hover{background:#4a3b43!important;border-color:#4a3b43!important}
+body.sl-on salla-add-product-button button,body.sl-on salla-add-product-button .s-button-element{background:#fff!important;border:1px solid var(--sl-line3)!important;color:var(--sl-ink)!important}
+body.sl-on salla-add-product-button button:hover{background:var(--sl-pink100)!important;border-color:var(--sl-ink)!important}
+.sl-gift{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 24px;margin:0 0 22px;background:var(--sl-white);border:1px solid var(--sl-line);position:relative;overflow:hidden}
+.sl-gift[hidden]{display:none}
+.sl-gift::before{content:"";position:absolute;top:0;bottom:0;inset-inline-start:0;width:3px;background:var(--sl-rose)}
+.sl-gift h3{font-size:20px;font-weight:500;margin:0 0 2px;line-height:1.5}
+.sl-gift p{font-size:14px;color:var(--sl-ink2);margin:0;line-height:1.8}
+.sl-gift .sl-btn{min-height:48px;padding:0 22px;flex:none}
+.sl-gift .sl-btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.3;fill:none}
+@media (max-width:640px){.sl-gift{flex-direction:column;align-items:flex-start}.sl-gift .sl-btn{width:100%}}
+.sl-pay{display:inline-flex;align-items:center;gap:14px;flex-wrap:wrap}
+.sl-pay salla-payments{display:inline-flex}
+.sl-pay salla-payments ul,.sl-pay salla-payments .s-payments-list{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.sl-pay salla-payments img{height:22px;width:auto;background:#fff;padding:3px 6px;border:1px solid rgba(53,42,48,.08)}
+body.sl-on salla-installment{display:block;margin:6px 0 14px}
+body.sl-on salla-installment *{border-radius:0!important}
