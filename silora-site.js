@@ -49,7 +49,7 @@
   function storeBase() { var u = cfg('store.url', location.origin + '/'); return u.charAt(u.length - 1) === '/' ? u : u + '/'; }
   var PREVIEW = location.hostname === 'salla.sa';
   function U(path) {
-    if (!path) return '#';
+    if (!path) return PREVIEW ? storeBase() : location.origin + '/ar';
     if (/^https?:/.test(path)) return path;
     return PREVIEW ? storeBase() + path : location.origin + '/ar/' + path;
   }
