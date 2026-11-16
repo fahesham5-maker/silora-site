@@ -595,6 +595,29 @@
     });
   }
 
+  function alsoLove(name) {
+    var main = document.querySelector('main'); if (!main || main.querySelector('.sl-also')) return;
+    var cm = main.querySelector('salla-comments');
+    var tidy = function () {
+      if (cm && !cm.querySelector('.s-comments-item, .s-comment, li, article') && !cm.innerText.trim()) cm.classList.add('sl-gone');
+      [].slice.call(main.querySelectorAll('.container')).forEach(function (c) { if (/منتجات قد تعجبك/.test(c.textContent) && !c.querySelector('img')) c.classList.add('sl-gone'); });
+    };
+    tidy(); setTimeout(tidy, 2500); setTimeout(tidy, 6000);
+    var n = String(name || '').toLowerCase(), key = null;
+    Object.keys(PAIR).forEach(function (k) { if (n.indexOf(k) > -1) key = k; });
+    var robe = isRobe(name);
+    products().then(function (list) {
+      var picks = list.filter(function (p) { var pn = String(p.name).toLowerCase(); return !(key && pn.indexOf(key) > -1) && isRobe(p.name) === robe; });
+      list.forEach(function (p) { if (picks.length < 4 && picks.indexOf(p) < 0 && !(key && String(p.name).toLowerCase().indexOf(key) > -1)) picks.push(p); });
+      picks = picks.slice(0, 4); if (!picks.length) return;
+      var sec = h('<section class="sl sl-also"><h2 class="sl-h2 sl-reveal">قد يعجبكِ أيضاً</h2><div class="sl-grid sl-also__grid">' + picks.map(card).join('') + '</div></section>');
+      sec.querySelectorAll('.sl-card').forEach(function (c, i) { c.classList.add('sl-reveal'); c.setAttribute('data-d', i); });
+      var after = main.querySelector('.s-blocks-wrapper.s-after-related') || main.lastElementChild;
+      main.insertBefore(sec, after);
+      reveal(sec);
+    });
+  }
+
   var FAST_CSS = 'button{height:52px!important;min-height:52px!important;width:100%!important;border-radius:0!important;background:#352A30!important;border:1px solid #352A30!important;color:#fff!important;font-family:"Noto Naskh Arabic",serif!important;font-size:15px!important;font-weight:500!important;box-shadow:none!important;display:flex!important;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:background .35s cubic-bezier(.22,.61,.36,1)!important}button:hover{background:#4a3b43!important;border-color:#4a3b43!important}button *,button svg{color:#fff!important}';
   function squareFast() {
     document.querySelectorAll('salla-mini-checkout-widget').forEach(function (m) {
@@ -699,7 +722,7 @@
     wire();
     headerScroll(hd, isHome);
     cartCount();
-    if (isPdp) { pdp(); watchFast(); watchSizes(); pairSection((document.querySelector('.main-content h1') || {}).textContent); }
+    if (isPdp) { pdp(); watchFast(); watchSizes(); pairSection((document.querySelector('.main-content h1') || {}).textContent); alsoLove((document.querySelector('.main-content h1') || {}).textContent); }
     var ck = colKey();
     if (ck) collection(ck); else if (isCat) category();
     if (homeEl) {

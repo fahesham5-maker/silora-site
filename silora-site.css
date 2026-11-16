@@ -481,3 +481,11 @@ body.sl-on .sl-sizebox .s-product-options-option{display:block!important;padding
 .sl-pair__card{background:var(--sl-white);padding:12px 12px 18px;box-shadow:0 24px 50px -30px rgba(53,42,48,.45)}
 .sl-pair__card .sl-card__name{font-size:20px;margin-top:12px}
 @media (max-width:768px){.sl-pair__in{grid-template-columns:1fr;gap:28px;padding:56px var(--sl-pad)}.sl-pair__card{max-width:320px}}
+
+.sl-gone{display:none!important}
+body.sl-on.product-single .s-blocks-wrapper.s-before-related,body.sl-on.product-single .s-block--bundle-similar-products,body.sl-on.product-single .s-block--bundle-customers-also-bought,body.sl-on.product-single .s-block--bundle-customers-also-viewed{min-height:0}
+body.sl-on.product-single .s-blocks-wrapper:empty,body.sl-on.product-single .s-blocks-wrapper.s-before-related:not(:has(img)){display:none!important}
+body.sl-on.product-single section.s-block[class*=bundle]:not(:has(img)){display:none!important}
+.sl-also{padding:88px 0 40px}
+.sl-also .sl-h2{padding:0 var(--sl-pad);margin-bottom:36px}
+@media (max-width:640px){.sl-also{padding:56px 0 24px}}
