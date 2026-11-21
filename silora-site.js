@@ -583,7 +583,8 @@
 
   function enhanceSizes() {
     var box = [].slice.call(document.querySelectorAll('.s-product-options-option-container')).find(function (c) {
-      return c.querySelector('select') && /المقاس|size/i.test((c.querySelector('label') || {}).textContent || '');
+      var sl = c.querySelector('select');
+      return sl && (/المقاس|size/i.test((c.querySelector('label') || {}).textContent || '') || [].slice.call(sl.options).some(function (o) { return /^(XS|S|M|L|XL)$/.test(o.textContent.trim()); }));
     });
     if (!box || box.querySelector('.sl-sizes')) return !!box;
     var sel = box.querySelector('select');
