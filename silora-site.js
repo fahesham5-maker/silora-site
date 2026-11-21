@@ -25,7 +25,21 @@
     '93545949': 'Blue Me Away', '1133289926': 'Pink About It', '1729481504': 'Mint To Be',
     '1436896160': 'Butter Me Up', '690540196': 'Pink Me Later'
   };
-  var MATERIAL = '٩٣٪ فيسكوز و٧٪ سباندكس';
+  var MATERIAL = 'بامبو';
+  var FIT = { shorts: ['blue me away', 'pink about it'], wide: ['blue me away', 'pink about it'] };
+  var CHART = {
+    robe: { t: 'الروب', rows: [['الطول', 83.5, 86, 88.5], ['نصف الصدر', 53, 55, 57], ['عرض الكتف', 48, 50, 52], ['طول الكم', 38.5, 40.5, 42.5], ['نصف الخصر', 56, 58, 60], ['عرض الأسفل', 68, 70, 72]] },
+    wide: { t: 'الروب', rows: [['الطول', 82, 84.5, 87], ['نصف الصدر', 54, 56, 58], ['عرض الكتف', 48.5, 50.5, 52.5], ['طول الكم', 49, 51, 53], ['نصف الخصر', 56.5, 58.5, 60.5], ['عرض الأسفل', 68, 70, 72]] },
+    top: { t: 'التوب', rows: [['الطول', 44, 46, 48], ['نصف الصدر', 42, 44, 46], ['طول الحمالة', 40, 41, 42], ['عرض الأسفل', 45, 47, 49]] },
+    pants: { t: 'البنطلون', rows: [['الطول', 95, 98, 101], ['نصف الخصر', 36.5, 38.5, 40.5], ['نصف الورك', 50.5, 52.5, 54.5], ['فتحة الرجل', 18.5, 19, 19.5], ['الحِجر الأمامي', 29.5, 30.5, 31.5]] },
+    shorts: { t: 'الشورت', rows: [['الطول', 32.5, 34, 35.5], ['نصف الخصر', 36.5, 38.5, 40.5], ['نصف الورك', 56, 58, 60], ['فتحة الرجل', 37, 38, 39], ['الحِجر الأمامي', 30, 31, 32]] }
+  };
+  var KINDS = {
+    set: { label: 'طقم بنطلون', card: 'طقم توب وبنطلون', parts: ['top', 'pants'] },
+    shorts: { label: 'طقم شورت', card: 'طقم توب وشورت', parts: ['top', 'shorts'] },
+    robe: { label: 'روب', card: 'روب يُلبس فوق الطقم', parts: ['robe'] },
+    wide: { label: 'روب بأكمام واسعة', card: 'روب بأكمام واسعة', parts: ['wide'] }
+  };
 
   var I = {
     user: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.9-3.6 3.7-5.6 7.2-5.6s6.3 2 7.2 5.6"/></svg>',
@@ -61,7 +75,7 @@
   function catUrl(k) { return CAT[k] ? U(CAT[k]) : U('search') + '?q=silora&sl=' + k; }
   var COLS = {
     news: { t: 'وصل حديثاً', s: 'أحدث قطع سيلورا، لطقسكِ المفضل القادم.' },
-    pajamas: { t: 'بيجامات', s: 'أطقم ناعمة من قماش ٩٣٪ فيسكوز و٧٪ سباندكس، للحظاتكِ الهادئة.' },
+    pajamas: { t: 'بيجامات', s: 'أطقم ناعمة للحظاتكِ الهادئة.' },
     robes: { t: 'أرواب', s: 'أرواب خفيفة تُكمل أطقمكِ المفضلة، بنفس النعومة.' },
     gifts: { t: 'هدايا', s: 'هدية ناعمة لمن تحبين — أو لكِ أنتِ.' },
     all: { t: 'تسوقي الكل', s: 'كل قطع سيلورا في مكان واحد.' }
@@ -85,6 +99,20 @@
     return null;
   }
   function isRobe(name) { return /روب|robe/i.test(String(name || '')); }
+  function baseName(name) { return String(name || '').replace(/^\s*روب\s*/, '').replace(/\s*robe\s*$/i, '').trim(); }
+  function kindOf(name) {
+    var n = String(name || '').toLowerCase();
+    var has = function (a) { return a.some(function (k) { return n.indexOf(k) > -1; }); };
+    if (isRobe(name)) return has(FIT.wide) ? 'wide' : 'robe';
+    return has(FIT.shorts) ? 'shorts' : 'set';
+  }
+  function blurb(name) {
+    var k = kindOf(name), b = baseName(name);
+    if (k === 'robe') return 'روب خفيف يُلبس فوق طقم ' + b + ' ليكمل الإطلالة.';
+    if (k === 'wide') return 'روب بأكمام واسعة يُلبس فوق طقم ' + b + ' ليكمل الإطلالة.';
+    if (k === 'shorts') return 'طقم بيجامة: توب بحمالات وشورت.';
+    return 'طقم بيجامة: توب بحمالات وبنطلون طويل.';
+  }
   function price(p) {
     var v = p && (p.sale_price && p.is_on_sale ? p.sale_price : p.price);
     if (v && typeof v === 'object') v = v.amount;
@@ -100,8 +128,9 @@
       '<span class="sl-badge">جديد</span></a>' +
       '<button class="sl-wish" type="button" data-id="' + esc(p.id) + '" aria-label="أضيفي إلى المفضلة">' + I.heart + '</button>' +
       '<a href="' + esc(productUrl(p.url)) + '" class="sl-card__name">' + esc(p.name) + '</a>' +
+      '<div class="sl-card__desc">' + KINDS[kindOf(p.name)].card + '</div>' +
       (c.ar ? '<div class="sl-card__color"><i style="background:' + c.c + '"></i>' + c.ar + '</div>' : '') +
-      '<div class="sl-card__mat">' + MATERIAL + '</div>' +
+      '<div class="sl-card__mat">الخامة: ' + MATERIAL + '</div>' +
       '<div class="sl-card__price">' + price(p) + '</div></article>';
   }
 
@@ -167,25 +196,52 @@
       '</div>';
   }
 
-  function sizeBody(name) {
-    var robe = isRobe(name);
-    var rows = robe ? ['الروب — عرض الصدر', 'الروب — الطول', 'الروب — طول الكم'] :
-      ['البلوزة — عرض الصدر', 'البلوزة — الطول', 'السفلي — الخصر (مرتخٍ)', 'السفلي — الورك', 'السفلي — الطول'];
-    var sizes = ['S', 'M', 'L', 'XL'];
-    var tr = rows.map(function (r) { return '<tr><th>' + r + '</th>' + sizes.map(function () { return '<td>—</td>'; }).join('') + '</tr>'; }).join('');
-    return '<div class="sl-size"><h3>' + esc(name || '') + '</h3>' +
-      '<div class="sl-tabs" role="tablist"><button type="button" class="is-on" data-sl-tab="m" role="tab">مقاسات القطعة</button><button type="button" data-sl-tab="h" role="tab">طريقة القياس</button></div>' +
-      '<div class="sl-pane is-on" data-sl-pane="m">' +
-      '<div class="sl-units">الوحدة <button type="button" class="is-on" data-sl-unit="cm">سم</button><button type="button" data-sl-unit="in">إنش</button></div>' +
-      '<table class="sl-table"><thead><tr><th></th>' + sizes.map(function (s) { return '<th>' + s + '</th>'; }).join('') + '</tr></thead><tbody>' + tr + '</tbody></table>' +
-      '<div class="sl-fit"><b>إرشادات المقاس</b><p>تُقاس القطع وهي مفرودة من الأمام. نفصل بين مقاسات الجسم ومقاسات القطعة لتتمكني من المقارنة بدقة.</p></div>' +
-      '</div>' +
-      '<div class="sl-pane" data-sl-pane="h"><ol class="sl-how">' +
-      '<li><b>الصدر:</b> قيسي حول أعرض جزء من الصدر مع إبقاء الشريط مستوياً.</li>' +
-      '<li><b>الخصر:</b> قيسي حول أضيق جزء من الخصر الطبيعي.</li>' +
-      '<li><b>الورك:</b> قيسي حول أعرض جزء من الورك والقدمان متلاصقتان.</li>' +
-      '<li><b>بين مقاسين؟</b> اختاري المقاس الأكبر لإحساس أكثر راحة.</li>' +
-      '</ol></div></div>';
+  function chartTable(k) {
+    var c = CHART[k];
+    return '<div class="sl-sc__part"><h4>' + c.t + '</h4><table><thead><tr><th>القياس</th><th>S</th><th>M</th><th>L</th></tr></thead><tbody>' +
+      c.rows.map(function (r) { return '<tr><th>' + r[0] + '</th><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>'; }).join('') +
+      '</tbody></table></div>';
+  }
+  function chartKind(k) { return KINDS[k].parts.map(chartTable).join(''); }
+  var sizeName = '';
+  function sizeModal() {
+    var m = document.querySelector('.sl-sc');
+    if (!m) {
+      m = h('<div class="sl sl-sc" role="dialog" aria-modal="true" aria-labelledby="sl-sc-t" aria-hidden="true"><div class="sl-sc__scrim" data-sl-sc-x></div>' +
+        '<div class="sl-sc__box" tabindex="-1"><div class="sl-sc__head"><div><h3 id="sl-sc-t">جدول المقاسات</h3><p data-sl-sc-name></p></div><button type="button" class="sl-sc__x" data-sl-sc-x aria-label="إغلاق">' + I.close + '</button></div>' +
+        '<div class="sl-sc__chips" data-sl-sc-chips></div><div class="sl-sc__body" data-sl-sc-body></div>' +
+        '<p class="sl-sc__note">القياسات بالسنتيمتر والقطعة مفرودة، وقد تختلف بين 0.5 و2 سم.</p></div></div>');
+      document.body.appendChild(m);
+      m.addEventListener('click', function (e) {
+        if (e.target.closest('[data-sl-sc-x]')) { closeSize(); return; }
+        var chip = e.target.closest('[data-sl-sc-k]'); if (!chip) return;
+        m.querySelectorAll('[data-sl-sc-k]').forEach(function (b) { var on = b === chip; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
+        m.querySelector('[data-sl-sc-body]').innerHTML = chartKind(chip.getAttribute('data-sl-sc-k'));
+      });
+    }
+    var chips = m.querySelector('[data-sl-sc-chips]');
+    if (sizeName) {
+      m.querySelector('[data-sl-sc-name]').textContent = sizeName;
+      chips.innerHTML = ''; chips.hidden = true;
+      m.querySelector('[data-sl-sc-body]').innerHTML = chartKind(kindOf(sizeName));
+    } else {
+      m.querySelector('[data-sl-sc-name]').textContent = 'بيجامات وأرواب سيلورا';
+      chips.hidden = false;
+      chips.innerHTML = Object.keys(KINDS).map(function (k, i) { return '<button type="button" data-sl-sc-k="' + k + '" aria-pressed="' + (i === 0) + '"' + (i === 0 ? ' class="is-on"' : '') + '>' + KINDS[k].label + '</button>'; }).join('');
+      m.querySelector('[data-sl-sc-body]').innerHTML = chartKind('set');
+    }
+    if (openDrawer) close();
+    lastFocus = document.activeElement;
+    m.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('sl-lock');
+    requestAnimationFrame(function () { m.classList.add('is-open'); m.querySelector('.sl-sc__box').focus({ preventScroll: true }); });
+  }
+  function closeSize() {
+    var m = document.querySelector('.sl-sc.is-open'); if (!m) return false;
+    m.classList.remove('is-open'); m.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('sl-lock');
+    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    return true;
   }
 
   function heroSlides() {
@@ -265,7 +321,7 @@
       '<a class="sl-footer__ig" href="' + IG + '" target="_blank" rel="noopener">إنستغرام <b>@silora_sa</b></a></div>' +
       '<div><h4>تسوقي</h4><ul><li><a href="' + catUrl('news') + '">وصل حديثاً</a></li><li><a href="' + catUrl('pajamas') + '">بيجامات</a></li><li><a href="' + catUrl('robes') + '">أرواب</a></li><li><a href="' + catUrl('gifts') + '">هدايا</a></li></ul></div>' +
       '<div><h4>اكتشفي</h4><ul><li><a href="' + U('') + '#sl-story">قصتنا</a></li><li><a href="' + U(PAGES.fabric) + '">قماشنا</a></li><li><a href="#" data-sl-open="cert">شهادة الخامة (قماش <span class="sl-latin">OEKO-TEX®</span>)</a></li></ul></div>' +
-      '<div><h4>المساعدة</h4><ul><li><a href="#" data-sl-open="size">دليل المقاسات</a></li><li><a href="' + U(PAGES.shipping) + '">الشحن والتوصيل</a></li><li><a href="' + U(PAGES.returns) + '">الاستبدال والاسترجاع</a></li><li><a href="' + U(PAGES.contact) + '">تواصلي معنا</a></li></ul></div>' +
+      '<div><h4>المساعدة</h4><ul><li><a href="#" data-sl-open="size">جدول المقاسات</a></li><li><a href="' + U(PAGES.shipping) + '">الشحن والتوصيل</a></li><li><a href="' + U(PAGES.returns) + '">الاستبدال والاسترجاع</a></li><li><a href="' + U(PAGES.contact) + '">تواصلي معنا</a></li></ul></div>' +
       '<div><h4>قانوني</h4><ul><li><a href="' + U(PAGES.privacy) + '">سياسة الخصوصية</a></li></ul></div>' +
       '</div><div class="sl-footer__bot"><span>© ' + new Date().getFullYear() + ' سيلورا، المملكة العربية السعودية</span><span class="sl-pay"><span>دفع آمن عبر سلة</span><salla-payments></salla-payments></span></div></footer>');
   }
@@ -273,11 +329,11 @@
   function pdpBlock(name) {
     return h('<div class="sl sl-pdp">' +
       '<div class="sl-gift" data-sl-giftbox hidden><div><h3>اهدِ من تحب</h3><p>أرسلي هذه القطعة كهدية تُسعد من تحبين، بخطوات بسيطة.</p></div><button type="button" class="sl-btn" data-sl-gift>' + I.gift + 'أرسلي كهدية</button></div>' +
-      '<div class="sl-pdp__row"><button type="button" class="sl-link" data-sl-open="size">دليل المقاسات</button></div>' +
-      '<div class="sl-fabric"><div><small>القماش</small><span>' + MATERIAL + ' جيرسي</span></div><button type="button" data-sl-open="cert">' + I.doc + 'عرض شهادة الخامة</button></div>' +
+      '<div class="sl-pdp__row"><button type="button" class="sl-link" data-sl-open="size">جدول المقاسات</button></div>' +
+      '<div class="sl-fabric"><div><small>الخامة</small><span>' + MATERIAL + '</span></div><button type="button" data-sl-open="cert">' + I.doc + 'عرض شهادة الخامة</button></div>' +
       '<div class="sl-ship">التوصيل لجميع مناطق المملكة خلال ٣–٧ أيام عمل، برسوم ٣٠ ر.س<br>الاستبدال أو الاسترجاع خلال ٧ أيام — غير مستخدمة، غير مغسولة، مع البطاقات.<br><a href="' + U(PAGES.returns) + '">سياسة الاستبدال والاسترجاع</a></div>' +
-      '<div class="sl-acc is-open"><button type="button" aria-expanded="true">القماش والعناية <i></i></button><div><div><p>جيرسي محبوك ' + MATERIAL + ' (١٩٠ غ). ناعم، مرن وخفيف على البشرة. تعليمات العناية التفصيلية مرفقة مع القطعة.</p></div></div></div>' +
-      '<div class="sl-acc"><button type="button" aria-expanded="false">المقاس والقصّة <i></i></button><div><div><p>قصّة مريحة للحظات الاسترخاء. راجعي <a href="#" data-sl-open="size" style="text-decoration:underline">دليل المقاسات</a> لاختيار مقاسكِ.</p></div></div></div>' +
+      '<div class="sl-acc is-open"><button type="button" aria-expanded="true">الخامة <i></i></button><div><div><p>الخامة: ' + MATERIAL + '</p></div></div></div>' +
+      '<div class="sl-acc"><button type="button" aria-expanded="false">المقاس والقصّة <i></i></button><div><div><p>قصّة مريحة للحظات الاسترخاء. المقاسات المتوفرة S وM وL، راجعي <a href="#" data-sl-open="size" style="text-decoration:underline">جدول المقاسات</a> لاختيار مقاسكِ.</p></div></div></div>' +
       '<div class="sl-acc"><button type="button" aria-expanded="false">التوصيل والاسترجاع <i></i></button><div><div><p>تجهيز الطلب خلال ١–٢ يوم، والتوصيل خلال ٣–٧ أيام عمل لجميع مناطق المملكة برسوم ٣٠ ر.س. الاستبدال أو الاسترجاع خلال ٧ أيام من الاستلام، والتواصل عبر إنستغرام <span class="sl-ltr">@silora_sa</span>.</p></div></div></div>' +
       '</div>');
   }
@@ -317,7 +373,7 @@
     document.addEventListener('click', function (e) {
       var t = e.target.closest('[data-sl-open],[data-sl-close],[data-sl-account],[data-sl-search],[data-sl-acc],.sl-acc>button,[data-sl-tab],[data-sl-unit],[data-sl-zoom],.sl-wish,[data-sl-mq]');
       if (!t) return;
-      if (t.hasAttribute('data-sl-open')) { e.preventDefault(); open(t.getAttribute('data-sl-open')); }
+      if (t.hasAttribute('data-sl-open')) { e.preventDefault(); if (t.getAttribute('data-sl-open') === 'size') sizeModal(); else open(t.getAttribute('data-sl-open')); }
       else if (t.hasAttribute('data-sl-close')) { if (t.tagName !== 'A' || t.getAttribute('href').indexOf('#') > -1) close(); }
       else if (t.hasAttribute('data-sl-account')) { e.preventDefault(); close(); account(); }
       else if (t.hasAttribute('data-sl-search')) { e.preventDefault(); search(); }
@@ -353,7 +409,7 @@
       }
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') { close(); var lb = document.querySelector('.sl-lightbox.is-open'); if (lb) lb.classList.remove('is-open'); }
+      if (e.key === 'Escape') { if (closeSize()) return; close(); var lb = document.querySelector('.sl-lightbox.is-open'); if (lb) lb.classList.remove('is-open'); }
       if (e.key === 'Tab' && openDrawer) {
         var f = openDrawer.querySelectorAll('a[href],button,input');
         if (!f.length) return;
@@ -533,7 +589,7 @@
     var sel = box.querySelector('select');
     var label = box.querySelector('.s-product-options-option-label');
     box.classList.add('sl-sizebox');
-    var head = h('<div class="sl sl-sizes__head"><span>المقاس: <b data-sl-size>اختاري مقاسكِ</b></span><button type="button" class="sl-link" data-sl-open="size">دليل المقاسات</button></div>');
+    var head = h('<div class="sl sl-sizes__head"><span>المقاس: <b data-sl-size>اختاري مقاسكِ</b></span><button type="button" class="sl-link sl-sizes__chart" data-sl-open="size">جدول المقاسات</button></div>');
     var grid = h('<div class="sl sl-sizes" role="radiogroup" aria-label="المقاس"></div>');
     [].slice.call(sel.options).forEach(function (o) {
       if (!o.value) return;
@@ -566,11 +622,11 @@
   }
 
   var PAIR = {
-    'blue me away': { bg: '#BFDCEF', ar: 'السماوي' },
-    'pink about it': { bg: '#F6D5D8', ar: 'الوردي الفاتح' },
-    'mint to be': { bg: '#CFE3CF', ar: 'النعناعي' },
-    'butter me up': { bg: '#F2E3A9', ar: 'الزبدي' },
-    'pink me later': { bg: '#EEC3D3', ar: 'الكاروهات الوردي' }
+    'blue me away': { bg: '#BFDCEF', ar: 'باللون السماوي' },
+    'pink about it': { bg: '#F6D5D8', ar: 'باللون الوردي الفاتح' },
+    'mint to be': { bg: '#CFE3CF', ar: 'باللون النعناعي' },
+    'butter me up': { bg: '#F2E3A9', ar: 'باللون الزبدي' },
+    'pink me later': { bg: '#EEC3D3', ar: 'بالكاروهات الوردي' }
   };
   function pairSection(name) {
     var n = String(name || '').toLowerCase(), key = null;
@@ -583,8 +639,8 @@
       var mate = list.filter(function (p) { return String(p.name).toLowerCase().indexOf(key) > -1 && isRobe(p.name) !== robe; })[0];
       if (!mate) return;
       var c = colorOf(mate.name) || { ar: '', c: PAIR[key].bg };
-      var title = robe ? 'طقم ' + mate.name.replace(/^روب\s*/, '') : mate.name;
-      var text = robe ? 'الطقم المطابق لهذا الروب، من نفس الجيرسي ' + PAIR[key].ar + ' وبنفس لمسات الدانتيل.' : 'روب ' + mate.name.replace(/^روب\s*/, '') + ' مصنوع من نفس الجيرسي ' + PAIR[key].ar + '، ومزيّن بدانتيل مطابق.';
+      var title = mate.name;
+      var text = robe ? 'الطقم المطابق لهذا الروب، ' + PAIR[key].ar + ' وبنفس لمسات الدانتيل.' : 'الروب المطابق لهذا الطقم، ' + PAIR[key].ar + ' ومزيّن بدانتيل مطابق.';
       var sec = h('<section class="sl sl-pair" style="--sl-tint:' + PAIR[key].bg + '">' +
         (heroImg ? '<div class="sl-pair__bg" style="background-image:url(\'' + heroImg + '\')"></div>' : '') +
         '<div class="sl-pair__in"><div class="sl-pair__copy"><h2 class="sl-reveal">أكملي لحظتكِ</h2><p class="sl-reveal" data-d="1">' + esc(text) + '</p><span class="sl-pair__script sl-reveal" data-d="2">صُنعا ليُلبسا معاً</span></div>' +
@@ -642,11 +698,13 @@
     var form = mc.querySelector('form.product-form');
     var blk = pdpBlock(name);
     if (form && form.nextSibling) form.parentNode.insertBefore(blk, form.nextSibling); else mc.appendChild(blk);
+    sizeName = name;
+    if (h1 && !mc.querySelector('.sl-pdp-sub')) h1.insertAdjacentElement('afterend', h('<p class="sl sl-pdp-sub">' + esc(blurb(name)) + '</p>'));
     var c = colorOf(name);
     if (c && h1 && !mc.querySelector('.sl-pdp-color')) {
       var col = h('<div class="sl sl-pdp-color" style="display:flex;align-items:center;gap:10px;margin:8px 0 18px;font-size:14px;color:var(--sl-ink2)">اللون: <span style="color:var(--sl-ink)">' + c.ar + '</span><i style="width:26px;height:26px;border-radius:50%;background:' + c.c + ';box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px #352A30"></i></div>');
       var desc = mc.querySelector('.product__description');
-      (desc || h1).insertAdjacentElement('afterend', col);
+      (desc || mc.querySelector('.sl-pdp-sub') || h1).insertAdjacentElement('afterend', col);
     }
     var idIn = document.querySelector('form.product-form input[name="id"]');
     var pid = idIn ? idIn.value : '';
@@ -663,8 +721,6 @@
     }
     if (window.customElements && customElements.get('salla-gifting')) showGift();
     else if (window.customElements) Promise.race([customElements.whenDefined('salla-gifting'), new Promise(function (r) { setTimeout(function () { r('x'); }, 6000); })]).then(function (v) { if (v !== 'x') showGift(); });
-    var sz = document.querySelector('[data-sl-drawer="size"] .sl-drawer__body');
-    if (sz) sz.innerHTML = sizeBody(name);
   }
 
   function category() {
@@ -674,7 +730,7 @@
     var title = t ? t.textContent.trim() : document.title.split('|')[0].trim();
     if (t) t.style.display = 'none';
     var bc = main.querySelector('.container--breadcrumbs, nav.breadcrumbs');
-    var hd = h('<div class="sl sl-cathead"><h1 class="sl-reveal">' + esc(title) + '</h1><p class="sl-reveal" data-d="1">بيجامات وأرواب من قماش ' + MATERIAL + '، صُنعت للحظاتكِ الهادئة.</p></div>');
+    var hd = h('<div class="sl sl-cathead"><h1 class="sl-reveal">' + esc(title) + '</h1><p class="sl-reveal" data-d="1">بيجامات وأرواب صُنعت للحظاتكِ الهادئة.</p></div>');
     if (bc && bc.parentNode === main) bc.insertAdjacentElement('afterend', hd); else main.insertBefore(hd, main.firstChild);
   }
 
@@ -719,7 +775,6 @@
     if (oldF && oldF.parentNode) oldF.parentNode.insertBefore(tail, oldF); else app.appendChild(tail);
     b.appendChild(menuDrawer());
     b.appendChild(drawer('cert', 'شهادة الخامة', certBody()));
-    b.appendChild(drawer('size', 'دليل المقاسات', sizeBody('بيجامات وأرواب سيلورا')));
     wire();
     headerScroll(hd, isHome);
     cartCount();
